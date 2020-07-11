@@ -48,8 +48,10 @@ public class Main extends JFrame implements Serializable{
 	 * Create the frame.
 	 */
 	public Main() {
+		setResizable(false);
 		//创建窗体
 		setTitle("员工打卡系统");
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 536, 335);
 		contentPane = new JPanel();
@@ -61,7 +63,7 @@ public class Main extends JFrame implements Serializable{
 		search.setBounds(10, 53, 238, 25);
 		contentPane.add(search);
 		//文本框确定按钮
-		yes = new JButton("确定");
+		yes = new JButton("查找");
 		yes.setBounds(270, 54, 77, 23);
 		contentPane.add(yes);
 		showTime = new JLabel();
