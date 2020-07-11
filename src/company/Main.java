@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,8 +26,12 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+//import check.Employee;
+//import check.Main;
+
 public class Main extends JFrame implements Serializable{
-	private Company com=new Company();	
+	private Timer time;
+	private static Company com=new Company();	
 	private JPanel contentPane;
 	private JTextField search;
 	private JButton yes;
@@ -74,13 +81,6 @@ public class Main extends JFrame implements Serializable{
 	 * Create the frame.
 	 */
 	public Main() {
-		//载入员工
-		com.addEmployee(new Employee("张三",001));
-		com.addEmployee(new Employee("李四",002));
-		com.addEmployee(new Employee("王五",003));
-		com.addEmployee(new Employee("赵六",004));
-		
-	
 		//创建窗体
 		setTitle("员工打卡系统");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -135,59 +135,6 @@ public class Main extends JFrame implements Serializable{
 		js.setBounds(373, 20, 137, 160);
 		contentPane.add(js);
 
-	}
-
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		File f=new File("./a.txt");
-	    Timer time;
-		Main a=new Main();
-		if(!f.exists()) {
-		
-		}else {
-			ObjectInputStream i1 = null;
-			Object o1;
-			try {
-				i1 = new ObjectInputStream(new FileInputStream(f));
-				o1 = i1.readObject();
-				if(o1 instanceof Main){
-					 a=(Main)o1;
-				}
-				else {
-					
-				}
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}finally {
-				try {
-					if(i1!=null)i1.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			
-		}
-		
-		a.setVisible(true);
-		Container c=a.getContentPane();
-		Company com=a.getCom();
-		JTextField search=a.getSearch();
-		JButton yes=a.getYes();
-	    JButton registerStart=a.getRegisterStart();
-	    JTextArea message=a.getMessage();
-        JButton registerEnd =a.getRegisterEnd();
-		JButton exit=a.getExit() ;
-		JList<String> allEmployee =a.getAllEmployee();
-	    JLabel showTime =a.getShowtime();
-	
 		//这是一个显示时间的标签的方法
 		time=new Timer(100,new ActionListener() {
 			@Override
@@ -198,6 +145,34 @@ public class Main extends JFrame implements Serializable{
 		});
 		time.start();
 		
+		//监听窗口 关闭
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				ObjectOutputStream aa = null;
+				try {
+					File f=new File("./a.txt");
+					if(f.exists()) f.delete();
+					f.createNewFile();
+					aa = new ObjectOutputStream(new FileOutputStream(f));
+					aa.writeObject(com);
+					aa.flush();
+				
+				} catch (IOException ee) {
+					// TODO Auto-generated catch block
+					ee.printStackTrace();
+				}finally {
+					try {
+						if(aa!=null) aa.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					System.exit(0);
+				}
+			}
+		});
 		
 		
 
@@ -298,8 +273,6 @@ public class Main extends JFrame implements Serializable{
 			}
 		});
 
-		Main aaa=a;
-
 		exit.addActionListener(new ActionListener() {
 			
 			@Override
@@ -308,14 +281,10 @@ public class Main extends JFrame implements Serializable{
 				ObjectOutputStream aa = null;
 				try {
 					File f=new File("./a.txt");
-					if(f.exists()) {
-						f.delete();
-						f.createNewFile();
-					}else {
-						f.createNewFile();
-					}
+					if(f.exists()) f.delete();
+					f.createNewFile();
 					aa = new ObjectOutputStream(new FileOutputStream(f));
-					aa.writeObject(aaa);
+					aa.writeObject(com);
 					aa.flush();
 				
 				} catch (IOException ee) {
@@ -333,9 +302,61 @@ public class Main extends JFrame implements Serializable{
 			}
 		});
 	
-	
-
 	}
+
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				File f=new File("./a.txt");
+				if(!f.exists()) {
+					//载入员工
+					com.addEmployee(new Employee("张三",001));
+					com.addEmployee(new Employee("李四",002));
+					com.addEmployee(new Employee("王五",003));
+					com.addEmployee(new Employee("赵六",004));
+				}else {
+					ObjectInputStream i1 = null;
+					Object o1;
+					try {
+						i1 = new ObjectInputStream(new FileInputStream(f));
+						o1 = i1.readObject();
+						if(o1 instanceof Company){
+							com=(Company)o1;
+						}
+						else {
+							
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}finally {
+						try {
+							if(i1!=null)i1.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					
+				}
+				try {
+					Main frame = new Main();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+			
+		}
+
 
 
 }
