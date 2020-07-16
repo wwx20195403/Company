@@ -1,9 +1,14 @@
 package company;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class Company implements Serializable{
+public class Company {
 	 private ArrayList<Employee> list=new ArrayList ();
 	 private ArrayList<DakaInfo> message=new ArrayList<>();
 	public Company() {
@@ -85,5 +90,72 @@ public class Company implements Serializable{
 		}
 		return aaa;
 	}
+	public void saveCom() {
+		ObjectOutputStream aa = null;
+		try {
+			File f1=new File("./f1.txt");
+			if(f1.exists()) f1.delete();
+			f1.createNewFile();
+			aa = new ObjectOutputStream(new FileOutputStream(f1));
+			aa.writeObject(list);
+			aa.flush();
+			 File f2=new File("./f2.txt");
+			if(f2.exists()) f2.delete();
+			f2.createNewFile();
+			aa = new ObjectOutputStream(new FileOutputStream(f2));
+			aa.writeObject(message);
+			aa.flush();	
+		} catch (IOException ee) {
+			// TODO Auto-generated catch block
+			ee.printStackTrace();
+		}finally {
+			try {
+				if(aa!=null) aa.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	}
 	
+}
+	public void readCom() {
+		File f1=new File("./f1.txt");
+		File f2=new File("./f2.txt");
+		if(!(f1.exists()&f2.exists())) {
+			//载入员工
+			addEmployee(new Employee("张三",001));
+			addEmployee(new Employee("李四",002));
+			addEmployee(new Employee("王五",003));
+			addEmployee(new Employee("赵六",004));
+		}else {
+			ObjectInputStream i1 = null;
+			Object o1;
+			try {
+				i1 = new ObjectInputStream(new FileInputStream(f1));
+				o1 = i1.readObject();
+				if(o1 instanceof ArrayList){
+					list=(ArrayList<Employee>)o1;
+				}
+				i1 = new ObjectInputStream(new FileInputStream(f2));
+				o1 = i1.readObject();
+				if(o1 instanceof ArrayList){
+					message=(ArrayList<DakaInfo>)o1;
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}finally {
+				try {
+					if(i1!=null)i1.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+		}
+	}
 }

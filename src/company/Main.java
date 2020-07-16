@@ -43,40 +43,7 @@ public class Main extends JFrame implements Serializable{
 	private DefaultListModel<String> model;
     private JLabel showTime ;
 	private JScrollPane js;
-	
-	public JTextField getSearch() {
-		return search;
-	}
-	public JLabel getShowtime(){
-		return showTime;
-	}
-	public JButton getYes() {
-		return yes;
-	}
-	public JButton getRegisterStart() {
-		return registerStart;
-	}
-	public JButton getRegisterEnd() {
-		return registerEnd;
-	}
-	public JTextArea getMessage() {
-		return message;
-	}
-	public JButton getExit() {
-		return exit;
-	}
-	public JList<String> getAllEmployee() {
-		return allEmployee;
-	}
-	public DefaultListModel<String> getModel() {
-		return model;
-	}
-	public JScrollPane getJs() {
-		return js;
-	}
-	public Company getCom(){
-		return com;
-	}
+
 	/**
 	 * Create the frame.
 	 */
@@ -150,27 +117,8 @@ public class Main extends JFrame implements Serializable{
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				ObjectOutputStream aa = null;
-				try {
-					File f=new File("./a.txt");
-					if(f.exists()) f.delete();
-					f.createNewFile();
-					aa = new ObjectOutputStream(new FileOutputStream(f));
-					aa.writeObject(com);
-					aa.flush();
-				
-				} catch (IOException ee) {
-					// TODO Auto-generated catch block
-					ee.printStackTrace();
-				}finally {
-					try {
-						if(aa!=null) aa.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					System.exit(0);
-				}
+			com.saveCom();
+			System.exit(0);
 			}
 		});
 		
@@ -278,27 +226,8 @@ public class Main extends JFrame implements Serializable{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				ObjectOutputStream aa = null;
-				try {
-					File f=new File("./a.txt");
-					if(f.exists()) f.delete();
-					f.createNewFile();
-					aa = new ObjectOutputStream(new FileOutputStream(f));
-					aa.writeObject(com);
-					aa.flush();
-				
-				} catch (IOException ee) {
-					// TODO Auto-generated catch block
-					ee.printStackTrace();
-				}finally {
-					try {
-						if(aa!=null) aa.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					System.exit(0);
-				}
+					com.saveCom();
+					System.exit(0);		
 			}
 		});
 	
@@ -311,42 +240,8 @@ public class Main extends JFrame implements Serializable{
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				File f=new File("./a.txt");
-				if(!f.exists()) {
-					//载入员工
-					com.addEmployee(new Employee("张三",001));
-					com.addEmployee(new Employee("李四",002));
-					com.addEmployee(new Employee("王五",003));
-					com.addEmployee(new Employee("赵六",004));
-				}else {
-					ObjectInputStream i1 = null;
-					Object o1;
-					try {
-						i1 = new ObjectInputStream(new FileInputStream(f));
-						o1 = i1.readObject();
-						if(o1 instanceof Company){
-							com=(Company)o1;
-						}
-						else {
-							
-						}
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}finally {
-						try {
-							if(i1!=null)i1.close();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-					
-				}
 				try {
+					com.readCom();
 					Main frame = new Main();
 					frame.setVisible(true);
 				} catch (Exception e) {
